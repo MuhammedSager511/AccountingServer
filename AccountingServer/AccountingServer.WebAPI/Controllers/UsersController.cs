@@ -41,7 +41,7 @@ namespace AccountingServer.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(DeleteUserByIdCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteById(DeleteUserByIdCommand request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return StatusCode(response.StatusCode, response);

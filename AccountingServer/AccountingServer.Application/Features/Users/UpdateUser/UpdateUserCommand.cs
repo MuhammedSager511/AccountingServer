@@ -8,5 +8,5 @@ public sealed record UpdateUserCommand(
     string LastName,
     string UserName,
     string Email,
-    string Password
+    string? Password
     ) : IRequest<Result<string>>;
