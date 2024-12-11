@@ -1,4 +1,5 @@
 ﻿using AccountingServer.Domain.Entities;
+using AccountingServer.Domain.Events;
 using AutoMapper;
 
 using GenericRepository;
@@ -13,11 +14,13 @@ internal sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserComma
 {
     private readonly IMapper mapper;
     private readonly UserManager<AppUser> userManager;
+    private readonly IMediator mediator;
 
-    public UpdateUserCommandHandler(IMapper mapper ,UserManager<AppUser>userManager)
+    public UpdateUserCommandHandler(IMapper mapper ,UserManager<AppUser>userManager, IMediator mediator)
     {
         this.mapper = mapper;
         this.userManager = userManager;
+        this.mediator = mediator;
     }
 
     public async Task<Result<string>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -73,7 +76,7 @@ internal sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserComma
         if (isMailChanged)
         {
             //اعادة ارسال تاكيد على ايميل
-
+            await mediator.Publish(new AppUserEvent(appUser.Id));
         }
         return "User updated successfully";
     }

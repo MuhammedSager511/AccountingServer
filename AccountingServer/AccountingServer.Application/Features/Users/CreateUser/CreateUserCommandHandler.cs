@@ -1,4 +1,5 @@
 ﻿using AccountingServer.Domain.Entities;
+using AccountingServer.Domain.Events;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -11,11 +12,13 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
 {
     private readonly UserManager<AppUser> userManager;
     private readonly IMapper mapper;
+    private readonly IMediator mediator;
 
-    public CreateUserCommandHandler(UserManager<AppUser> userManager,IMapper mapper)
+    public CreateUserCommandHandler(UserManager<AppUser> userManager,IMapper mapper,IMediator mediator)
     {
         this.userManager = userManager;
         this.mapper = mapper;
+        this.mediator = mediator;
     }
     public async Task<Result<string>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
@@ -46,6 +49,7 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
 
         //تاكيد ايميل   فيما بعد
 
+        await mediator.Publish(new AppUserEvent(appUser.Id));
         return "Username completed successfully";
     }
 }
