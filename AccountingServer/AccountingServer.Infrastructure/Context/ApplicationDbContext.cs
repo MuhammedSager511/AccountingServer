@@ -11,7 +11,7 @@ namespace AccountingServer.Infrastructure.Context
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
-
+        public DbSet<Company> Companies { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(typeof(DependencyInjection).Assembly);
