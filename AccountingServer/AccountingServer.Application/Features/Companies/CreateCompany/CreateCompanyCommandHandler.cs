@@ -10,7 +10,7 @@ namespace AccountingServer.Application.Features.Companies.CreateCompany;
 
 internal sealed class CreateCompanyCommandHandler(
     ICompanyRepository companyRepository,
-    //ICacheService cacheService,
+    ICacheService cacheService,
     IUnitOfWork unitOfWork,
     IMapper mapper) : IRequestHandler<CreateCompanyCommand, Result<string>>
 {
@@ -29,7 +29,7 @@ internal sealed class CreateCompanyCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        //cacheService.Remove("companies");
+        cacheService.Remove("companies");
 
         return "The company was created successfully";
     }

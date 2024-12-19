@@ -10,5 +10,7 @@ namespace AccountingServer.Domain.Entities
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpires { get; set; }
         public bool isDeleted { get; set; }=false;
+        public List<CompanyUser>? CompanyUsers { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

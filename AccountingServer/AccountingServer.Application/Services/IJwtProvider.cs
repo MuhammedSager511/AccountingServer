@@ -5,6 +5,6 @@ namespace AccountingServer.Application.Services
 {
     public interface IJwtProvider
     {
-        Task<LoginCommandResponse> CreateToken(AppUser user);
+        Task<LoginCommandResponse> CreateToken(AppUser user, Guid? companyId, List<Company> companies);
     }
 }

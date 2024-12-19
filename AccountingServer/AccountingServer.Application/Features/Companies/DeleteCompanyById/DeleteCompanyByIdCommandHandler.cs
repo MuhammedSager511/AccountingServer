@@ -8,7 +8,7 @@ using TS.Result;
 namespace AccountingServer.Application.Features.Companies.DeleteCompanyById;
 
 internal sealed class DeleteCompanyByIdCommandHandler(
-    //ICacheService cacheService,
+    ICacheService cacheService,
     ICompanyRepository companyRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<DeleteCompanyByIdCommand, Result<string>>
 {
@@ -25,7 +25,7 @@ internal sealed class DeleteCompanyByIdCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        //cacheService.Remove("companies");
+        cacheService.Remove("companies");
 
         return "Company successfully deleted";
     }

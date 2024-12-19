@@ -13,5 +13,7 @@ public sealed record class CreateUserCommand(
     string LastName,
     string UserName,
     string Email,
-    string Password
-    ):IRequest<Result<string>>;
+    string Password,
+    List<Guid> CompanyIds,
+    bool IsAdmin
+    ) :IRequest<Result<string>>;

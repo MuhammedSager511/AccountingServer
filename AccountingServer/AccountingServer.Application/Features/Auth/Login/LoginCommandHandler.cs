@@ -1,5 +1,6 @@
 ﻿using AccountingServer.Application.Services;
 using AccountingServer.Domain.Entities;
+using AccountingServer.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,8 @@ namespace AccountingServer.Application.Features.Auth.Login
     internal sealed class LoginCommandHandler(
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
-        IJwtProvider jwtProvider) : IRequestHandler<LoginCommand, Result<LoginCommandResponse>>
+        IJwtProvider jwtProvider,
+        ICompanyUserRepository companyUserRepository) : IRequestHandler<LoginCommand, Result<LoginCommandResponse>>
     {
         public async Task<Result<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
@@ -46,8 +48,35 @@ namespace AccountingServer.Application.Features.Auth.Login
                 return (500, "Your password is incorrect");
             }
 
-            var loginResponse = await jwtProvider.CreateToken(user);
 
+
+            List<CompanyUser> companieUsers =
+                await companyUserRepository
+                .Where(p => p.AppUserId == user.Id)
+                .Include(p => p.Company)
+                .ToListAsync(cancellationToken);
+
+
+            List<Company> companies = new();
+
+            Guid? companyId = null;
+
+            if (companieUsers.Count > 0)
+            {
+                companyId = companieUsers.First().CompanyId;
+
+                companies = companieUsers.Select(s => new Company
+                {
+                    Id = s.CompanyId,
+                    Name = s.Company!.Name,
+                    TaxDepartment = s.Company!.TaxDepartment,
+                    TaxNumber = s.Company!.TaxNumber,
+                    FullAddress = s.Company!.FullAddress
+                }).ToList();
+            }
+
+
+            var loginResponse = await jwtProvider.CreateToken(user, companyId, companies);
 
             return loginResponse;
         }

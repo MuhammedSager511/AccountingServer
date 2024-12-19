@@ -5,9 +5,11 @@ using AccountingServer.Infrastructure.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.Design;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace AccountingServer.Infrastructure.Services
 {
@@ -15,14 +17,18 @@ namespace AccountingServer.Infrastructure.Services
         UserManager<AppUser> userManager,
         IOptions<JwtOptions> jwtOptions) : IJwtProvider
     {
-        public async Task<LoginCommandResponse> CreateToken(AppUser user)
+        public async Task<LoginCommandResponse> CreateToken(AppUser user, Guid? companyId, List<Company> companies)
         {
             List<Claim> claims = new()
             {
                 new Claim("Id", user.Id.ToString()),
                 new Claim("Name", user.FullName),
                 new Claim("Email", user.Email ?? ""),
-                new Claim("UserName", user.UserName ?? "")
+                new Claim("UserName", user.UserName ?? ""),
+                new Claim("CompanyId", companyId.ToString() ?? string.Empty),
+                new Claim("Companies", JsonSerializer.Serialize(companies)),
+                new Claim("IsAdmin", user.IsAdmin.ToString())
+
             };
 
             DateTime expires = DateTime.UtcNow.AddMonths(1);
@@ -52,5 +58,7 @@ namespace AccountingServer.Infrastructure.Services
 
             return new(token, refreshToken, refreshTokenExpires);
         }
+
+      
     }
 }

@@ -19,7 +19,8 @@ namespace AccountingServer.WebAPI.Middlewares
                         Email = "admin@admin.com",
                         FirstName = "Muhammed",
                         LastName = "Sager",
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        IsAdmin = true,
                     };
 
                     userManager.CreateAsync(user, "511").Wait();

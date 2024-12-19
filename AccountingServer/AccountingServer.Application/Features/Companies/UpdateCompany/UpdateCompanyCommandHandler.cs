@@ -9,7 +9,7 @@ using TS.Result;
 namespace AccountingServer.Application.Features.Companies.UpdateCompany;
 
 internal sealed class UpdateCompanyCommandHandler(
-    //ICacheService cacheService,
+    ICacheService cacheService,
     ICompanyRepository companyRepository,
     IUnitOfWork unitOfWork,
     IMapper mapper) : IRequestHandler<UpdateCompanyCommand, Result<string>>
@@ -37,7 +37,7 @@ internal sealed class UpdateCompanyCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        //cacheService.Remove("companies");
+        cacheService.Remove("companies");
 
         return "Company information updated successfully";
     }

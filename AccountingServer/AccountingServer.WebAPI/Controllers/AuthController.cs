@@ -1,4 +1,5 @@
-﻿using AccountingServer.Application.Features.Auth.ConfirmEmail;
+﻿using AccountingServer.Application.Features.Auth.ChangeCompany;
+using AccountingServer.Application.Features.Auth.ConfirmEmail;
 using AccountingServer.Application.Features.Auth.Login;
 using AccountingServer.Application.Features.Auth.SendConfirmEmail;
 using AccountingServer.WebAPI.Abstractions;
@@ -31,6 +32,14 @@ namespace AccountingServer.WebAPI.Controllers
 
         [HttpPost]
         public async Task<IActionResult> SendConfirmEmail(SendConfirmEmailCommand request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> ChangeCompany(ChangeCompanyCommand request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return StatusCode(response.StatusCode, response);

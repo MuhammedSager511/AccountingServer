@@ -1,4 +1,5 @@
-﻿using AccountingServer.Domain.Entities;
+﻿using AccountingServer.Application.Services;
+using AccountingServer.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using TS.Result;
@@ -8,10 +9,12 @@ namespace AccountingServer.Application.Features.Users.DeleteUserById;
 public sealed class DeleteUserByIdCommandHandler : IRequestHandler<DeleteUserByIdCommand, Result<string>>
 {
     private readonly UserManager<AppUser> userManager;
+    private readonly ICacheService cacheService;
 
-    public DeleteUserByIdCommandHandler(UserManager<AppUser> userManager)
+    public DeleteUserByIdCommandHandler(UserManager<AppUser> userManager, ICacheService cacheService)
     {
         this.userManager = userManager;
+        this.cacheService = cacheService;
     }
     public async Task<Result<string>> Handle(DeleteUserByIdCommand request, CancellationToken cancellationToken)
     {
@@ -29,6 +32,7 @@ public sealed class DeleteUserByIdCommandHandler : IRequestHandler<DeleteUserByI
         {
             return Result<string>.Failure(identityResult.Errors.Select(s => s.Description).ToList());
         }
+        cacheService.Remove("users");
 
         return "User deleted successfully";
     }

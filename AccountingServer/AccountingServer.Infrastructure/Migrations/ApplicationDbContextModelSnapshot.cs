@@ -44,6 +44,9 @@ namespace AccountingServer.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -122,6 +125,21 @@ namespace AccountingServer.Infrastructure.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("AccountingServer.Domain.Entities.CompanyUser", b =>
+                {
+                    b.Property<Guid>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AppUserId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyUsers");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -179,6 +197,28 @@ namespace AccountingServer.Infrastructure.Migrations
 
                     b.Navigation("Database")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AccountingServer.Domain.Entities.CompanyUser", b =>
+                {
+                    b.HasOne("AccountingServer.Domain.Entities.AppUser", null)
+                        .WithMany("CompanyUsers")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AccountingServer.Domain.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("AccountingServer.Domain.Entities.AppUser", b =>
+                {
+                    b.Navigation("CompanyUsers");
                 });
 #pragma warning restore 612, 618
         }

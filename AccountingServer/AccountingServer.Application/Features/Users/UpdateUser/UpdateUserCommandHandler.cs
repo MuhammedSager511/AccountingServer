@@ -1,5 +1,7 @@
-﻿using AccountingServer.Domain.Entities;
+﻿using AccountingServer.Application.Services;
+using AccountingServer.Domain.Entities;
 using AccountingServer.Domain.Events;
+using AccountingServer.Domain.Repositories;
 using AutoMapper;
 
 using GenericRepository;
@@ -15,17 +17,30 @@ internal sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserComma
     private readonly IMapper mapper;
     private readonly UserManager<AppUser> userManager;
     private readonly IMediator mediator;
+    private readonly ICompanyUserRepository companyUserRepository;
+    private readonly IUnitOfWork unitOfWork;
+    private readonly ICacheService cacheService;
 
-    public UpdateUserCommandHandler(IMapper mapper ,UserManager<AppUser>userManager, IMediator mediator)
+    public UpdateUserCommandHandler(IMapper mapper ,UserManager<AppUser>userManager, 
+        IMediator mediator, ICompanyUserRepository companyUserRepository,
+        IUnitOfWork unitOfWork, ICacheService cacheService)
     {
         this.mapper = mapper;
         this.userManager = userManager;
         this.mediator = mediator;
+        this.companyUserRepository = companyUserRepository;
+        this.unitOfWork = unitOfWork;
+        this.cacheService = cacheService;
     }
 
     public async Task<Result<string>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        AppUser? appUser = await userManager.FindByIdAsync(request.Id.ToString());
+        AppUser? appUser = await userManager.Users
+            .Where(p => p.Id == request.Id)
+            .Include(p => p.CompanyUsers)
+            .FirstOrDefaultAsync(cancellationToken);
+
+
         bool isMailChanged= false;
         if(appUser == null)
         {
@@ -72,6 +87,18 @@ internal sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserComma
                 return Result<string>.Failure(identityResult.Errors.Select(s => s.Description).ToList());
             }
         }
+        companyUserRepository.DeleteRange(appUser.CompanyUsers);
+
+        List<CompanyUser> companyUsers = request.CompanyIds.Select(s => new CompanyUser
+        {
+            AppUserId = appUser.Id,
+            CompanyId = s
+        }).ToList();
+
+        await companyUserRepository.AddRangeAsync(companyUsers, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+          cacheService.Remove("users");
 
         if (isMailChanged)
         {

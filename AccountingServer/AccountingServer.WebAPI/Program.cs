@@ -55,13 +55,14 @@
 //app.UseCors();
 
 //app.UseExceptionHandler();
+//app.UseDeveloperExceptionPage(); // ›Ì »Ì∆… «· ÿÊÌ— ›ﬁÿ
+
 
 //app.MapControllers();
 
 //ExtensionsMiddleware.CreateFirstUser(app);
 
 //app.Run();
-
 
 using AccountingServer.Application;
 using AccountingServer.Infrastructure;
@@ -71,35 +72,36 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ≈⁄œ«œ ”Ì«”… CORS „Œ’’…
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngularApp", policy =>
-    {
-        policy.WithOrigins("http://localhost:4200") // «·”„«Õ »„’œ— Angular
-              .AllowAnyHeader()                     // «·”„«Õ »√Ì  —ÊÌ”…
-              .AllowAnyMethod();                    // «·”„«Õ »√Ì ÿ—Ìﬁ… (GET, POST, ≈·Œ)
-    });
-});
-
+// Add Services to the container
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddExceptionHandler<ExceptionHandler>();
-builder.Services.AddProblemDetails();
-
+// Add Controllers
 builder.Services.AddControllers();
+
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DefaultPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+// Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(setup =>
 {
-    var jwtSecuritySheme = new OpenApiSecurityScheme
+    var jwtSecurityScheme = new OpenApiSecurityScheme
     {
         BearerFormat = "JWT",
         Name = "JWT Authentication",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = JwtBearerDefaults.AuthenticationScheme,
-        Description = "Put **_ONLY_** your JWT Bearer token in the textbox below!",
+        Description = "Put **_ONLY_** your JWT Bearer token on the textbox below!",
 
         Reference = new OpenApiReference
         {
@@ -108,35 +110,38 @@ builder.Services.AddSwaggerGen(setup =>
         }
     };
 
-    setup.AddSecurityDefinition(jwtSecuritySheme.Reference.Id, jwtSecuritySheme);
+    setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
     setup.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    { jwtSecuritySheme, Array.Empty<string>() }
-                });
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
 });
 
 var app = builder.Build();
 
+// Configure Middleware
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/error");
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
+app.UseCors("DefaultPolicy");
 
-//  ÿ»Ìﬁ ”Ì«”… CORS
-app.UseCors(policy => policy
-    .WithOrigins("http://localhost:4200")
-    .AllowAnyHeader()
-    .AllowAnyMethod());
-
-
-app.UseExceptionHandler();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
+// Custom Middleware: Create Default User
 ExtensionsMiddleware.CreateFirstUser(app);
 
 app.Run();

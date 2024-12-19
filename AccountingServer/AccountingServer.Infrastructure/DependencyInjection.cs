@@ -1,6 +1,9 @@
-﻿using AccountingServer.Domain.Entities;
+﻿using AccountingServer.Application.Services;
+using AccountingServer.Domain.Entities;
+using AccountingServer.Domain.Repositories;
 using AccountingServer.Infrastructure.Context;
 using AccountingServer.Infrastructure.Options;
+using AccountingServer.Infrastructure.Services;
 using GenericRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +18,20 @@ namespace AccountingServer.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddMemoryCache();
+            services.AddScoped<ICacheService, MemoryCacheService>();
+           
+
+
+            services.AddScoped<CompanyDbContext>();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("SqlServer"));
             });
 
             services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<ApplicationDbContext>());
+            services.AddScoped<IUnitOfWorkCompany>(srv => srv.GetRequiredService<CompanyDbContext>());
+
 
             services
                 .AddIdentity<AppUser, IdentityRole<Guid>>(cfr =>
