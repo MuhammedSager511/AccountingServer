@@ -4,6 +4,7 @@ using AccountingServer.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccountingServer.Infrastructure.Migrations.CompanyDb
 {
     [DbContext(typeof(CompanyDbContext))]
-    partial class CompanyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241220104342_mg4")]
+    partial class mg4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,23 +85,7 @@ namespace AccountingServer.Infrastructure.Migrations.CompanyDb
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CashRegisterId");
-
                     b.ToTable("CashRegisterDetails");
-                });
-
-            modelBuilder.Entity("AccountingServer.Domain.Entities.CashRegisterDetail", b =>
-                {
-                    b.HasOne("AccountingServer.Domain.Entities.CashRegister", null)
-                        .WithMany("Details")
-                        .HasForeignKey("CashRegisterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AccountingServer.Domain.Entities.CashRegister", b =>
-                {
-                    b.Navigation("Details");
                 });
 #pragma warning restore 612, 618
         }
