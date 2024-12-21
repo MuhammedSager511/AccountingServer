@@ -9,8 +9,8 @@ namespace AccountingServer.Application.Features.CashRegisterDetails.DeleteCashRe
 internal sealed class DeleteCashRegisterDetailByIdCommandHandler(
     //ICustomerRepository customerRepository,
     //ICustomerDetailRepository customerDetailRepository,
-    //IBankRepository bankRepository,
-    //IBankDetailRepository bankDetailRepository,
+    IBankRepository bankRepository,
+    IBankDetailRepository bankDetailRepository,
     ICashRegisterRepository cashRegisterRepository,
     ICashRegisterDetailRepository cashRegisterDetailRepository,
     IUnitOfWorkCompany unitOfWorkCompany,
@@ -65,31 +65,31 @@ internal sealed class DeleteCashRegisterDetailByIdCommandHandler(
             cashRegisterDetailRepository.Delete(oppositeCashRegisterDetail);
         }
 
-        //if (cashRegisterDetail.BankDetailId is not null)
-        //{
-        //    BankDetail? oppositeBankDetail =
-        //    await bankDetailRepository
-        //    .GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.BankDetailId, cancellationToken);
+        if (cashRegisterDetail.BankDetailId is not null)
+        {
+            BankDetail? oppositeBankDetail =
+            await bankDetailRepository
+            .GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.BankDetailId, cancellationToken);
 
-        //    if (oppositeBankDetail is null)
-        //    {
-        //        return Result<string>.Failure("Banka hareketi bulunamadı");
-        //    }
+            if (oppositeBankDetail is null)
+            {
+                return Result<string>.Failure("Banka hareketi bulunamadı");
+            }
 
-        //    Bank? oppositeBank =
-        //    await bankRepository
-        //    .GetByExpressionWithTrackingAsync(p => p.Id == oppositeBankDetail.BankId, cancellationToken);
+            Bank? oppositeBank =
+            await bankRepository
+            .GetByExpressionWithTrackingAsync(p => p.Id == oppositeBankDetail.BankId, cancellationToken);
 
-        //    if (oppositeBank is null)
-        //    {
-        //        return Result<string>.Failure("Banka bulunamadı");
-        //    }
+            if (oppositeBank is null)
+            {
+                return Result<string>.Failure("Banka bulunamadı");
+            }
 
-        //    oppositeBank.DepositAmount -= oppositeBankDetail.DepositAmount;
-        //    oppositeBank.WithdrawalAmount -= oppositeBankDetail.WithdrawalAmount;
+            oppositeBank.DepositAmount -= oppositeBankDetail.DepositAmount;
+            oppositeBank.WithdrawalAmount -= oppositeBankDetail.WithdrawalAmount;
 
-        //    bankDetailRepository.Delete(oppositeBankDetail);
-        //}
+            bankDetailRepository.Delete(oppositeBankDetail);
+        }
 
         //if (cashRegisterDetail.CustomerDetailId is not null)
         //{

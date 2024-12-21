@@ -20,7 +20,7 @@ internal sealed class UpdateCashRegisterDetailCommandHandler(
 
         if (cashRegisterDetail is null)
         {
-            return Result<string>.Failure("Kasa hareketi bulunamadı");
+            return Result<string>.Failure("No cash movement found");
         }
 
         CashRegister? cashRegister =
@@ -29,7 +29,7 @@ internal sealed class UpdateCashRegisterDetailCommandHandler(
 
         if (cashRegister is null)
         {
-            return Result<string>.Failure("Kasa bulunamadı");
+            return Result<string>.Failure("No safe found");
         }
 
         cashRegister.DepositAmount -= cashRegisterDetail.DepositAmount;

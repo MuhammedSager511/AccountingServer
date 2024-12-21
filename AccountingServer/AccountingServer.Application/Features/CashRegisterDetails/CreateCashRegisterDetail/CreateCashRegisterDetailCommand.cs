@@ -8,7 +8,7 @@ public sealed record CreateCashRegisterDetailCommand(
     int Type,
     decimal Amount,
     Guid? OppositeCashRegisterId,
-    //Guid? OppositeBankId,
+    Guid? OppositeBankId,
     //Guid? OppositeCustomerId,
     decimal OppositeAmount,
     string Description

@@ -1,4 +1,6 @@
-﻿using AccountingServer.Application.Features.CashRegisters.CreateCashRegister;
+﻿using AccountingServer.Application.Features.Banks.CreateBank;
+using AccountingServer.Application.Features.Banks.UpdateBank;
+using AccountingServer.Application.Features.CashRegisters.CreateCashRegister;
 using AccountingServer.Application.Features.CashRegisters.UpdateCashRegister;
 using AccountingServer.Application.Features.Companies.CreateCompany;
 using AccountingServer.Application.Features.Companies.UpdateCompany;
@@ -25,6 +27,17 @@ namespace AccountingServer.Application.Mapping
                 options.MapFrom(map => CurrencyTypeEnum.FromValue(map.CurrencyTypeValue));
             });
             CreateMap<UpdateCashRegisterCommand, CashRegister>().ForMember(member => member.CurrencyType, options =>
+            {
+                options.MapFrom(map => CurrencyTypeEnum.FromValue(map.CurrencyTypeValue));
+            });
+
+
+
+            CreateMap<CreateBankCommand, Bank>().ForMember(member => member.CurrencyType, options =>
+            {
+                options.MapFrom(map => CurrencyTypeEnum.FromValue(map.CurrencyTypeValue));
+            });
+            CreateMap<UpdateBankCommand, Bank>().ForMember(member => member.CurrencyType, options =>
             {
                 options.MapFrom(map => CurrencyTypeEnum.FromValue(map.CurrencyTypeValue));
             });
