@@ -1,0 +1,39 @@
+<app-blank pageName="{{customer.name}} Customer Transactions" [routes]="['Records','Customers',customer.name + ' Customer Transactions']">
+    <app-section sectionTitle="{{customer.name}} Customer Transactions">
+        <div class="form-group row">
+            <div class="col-9">                
+            </div>
+
+            <div class="col-3">
+                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Enter the value to search...">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Deposit</th>
+                        <th>Withdrawal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(data of customer.details| customerDetail: search ;track data){
+                    <tr>
+                        <td>{{$index + 1}}</td>
+                        <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
+                        <td>{{data.type.name}}</td>
+                        <td>{{data.description}}</td>
+                        <td>{{data.depositAmount | trCurrency: '₺': true}}</td>
+                        <td>{{data.withdrawalAmount | trCurrency: '₺': true}}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </app-section>
+</app-blank>

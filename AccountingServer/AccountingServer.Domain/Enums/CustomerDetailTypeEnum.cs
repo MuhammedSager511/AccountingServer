@@ -1,13 +1,14 @@
-﻿//using Ardalis.SmartEnum;
+﻿using Ardalis.SmartEnum;
 
-//namespace eMuhasebeServer.Domain.Enums;
-//public sealed class CustomerDetailTypeEnum : SmartEnum<CustomerDetailTypeEnum>
-//{
-//    public static readonly CustomerDetailTypeEnum Bank = new("Banka", 1);
-//    public static readonly CustomerDetailTypeEnum CashRegister = new("Kasa", 2);
-//    public static readonly CustomerDetailTypeEnum PurchaseInvoice = new("Alış Faturası", 3);
-//    public static readonly CustomerDetailTypeEnum SellingInvoice = new("Satış Faturası", 4);
-//    public CustomerDetailTypeEnum(string name, int value) : base(name, value)
-//    {
-//    }
-//}
+namespace AccountingServer.Domain.Enums;
+public sealed class CustomerDetailTypeEnum : SmartEnum<CustomerDetailTypeEnum>
+{
+    public static readonly CustomerDetailTypeEnum Bank = new("Bank", 1);
+    public static readonly CustomerDetailTypeEnum CashRegister = new("Cash Register", 2);
+    public static readonly CustomerDetailTypeEnum PurchaseInvoice = new("Purchase Invoice", 3);
+    public static readonly CustomerDetailTypeEnum SellingInvoice = new("Selling Invoice", 4);
+
+    public CustomerDetailTypeEnum(string name, int value) : base(name, value)
+    {
+    }
+}

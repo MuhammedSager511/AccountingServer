@@ -10,5 +10,5 @@ public sealed class BankDetail : Entity
     public decimal WithdrawalAmount { get; set; } //اخراج
     public Guid? BankDetailId { get; set; }   
     public Guid? CashRegisterDetailId { get; set; }
-    //public Guid? CustomerDetailId { get; set; }
+    public Guid? CustomerDetailId { get; set; }
 }

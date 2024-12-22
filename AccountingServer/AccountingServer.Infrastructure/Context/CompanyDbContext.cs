@@ -94,6 +94,8 @@ namespace AccountingServer.Infrastructure.Context
         public DbSet<CashRegisterDetail> CashRegisterDetails { get; set; }
         public DbSet<Bank> Banks { get; set; }
         public DbSet<BankDetail> BankDetails { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerDetail> CustomerDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -135,7 +137,23 @@ namespace AccountingServer.Infrastructure.Context
             // BankDetail
             modelBuilder.Entity<BankDetail>().Property(p => p.DepositAmount).HasColumnType("money");
             modelBuilder.Entity<BankDetail>().Property(p => p.WithdrawalAmount).HasColumnType("money");
-          
+
+
+            // Customer
+            modelBuilder.Entity<Customer>().Property(p => p.DepositAmount).HasColumnType("money");
+            modelBuilder.Entity<Customer>().Property(p => p.WithdrawalAmount).HasColumnType("money");
+            modelBuilder.Entity<Customer>().Property(p => p.Type)
+                .HasConversion(type => type.Value, value => CustomerTypeEnum.FromValue(value));
+            modelBuilder.Entity<Customer>().HasQueryFilter(filter => !filter.IsDeleted);
+           
+            
+            
+            ///CustomerDetail
+            modelBuilder.Entity<CustomerDetail>().Property(p => p.DepositAmount).HasColumnType("money");
+            modelBuilder.Entity<CustomerDetail>().Property(p => p.WithdrawalAmount).HasColumnType("money");
+            modelBuilder.Entity<CustomerDetail>().Property(p => p.Type)
+               .HasConversion(type => type.Value, value => CustomerDetailTypeEnum.FromValue(value));
+            
         }
 
     }

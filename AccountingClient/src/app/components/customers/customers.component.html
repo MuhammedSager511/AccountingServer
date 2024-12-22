@@ -1,0 +1,239 @@
+<app-blank pageName="Customers" [routes]="['Records','Customers']">
+    <app-section sectionTitle="Customer List">
+        <div class="form-group row">
+            <div class="col-9">
+                <button class="btn btn-dark" data-toggle="modal" data-target="#createModal">
+                    <i class="fa-solid fa-plus me-1"></i>
+                    Add Customer
+                </button>
+            </div>
+
+            <div class="col-3">
+                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Enter value to search...">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ON</th>
+                        <th>Customer Name</th>
+                        <th>Type</th>
+                        <th>City / District</th>
+                        <th>Address</th>
+                        <th>Tax Department</th>
+                        <th>Tax Number</th>
+                        <th>Deposit</th>
+                        <th>Withdrawal</th>
+                        <th>Balance</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(data of customers | customer: search ;track data){
+                    <tr>
+                        <td>{{$index + 1}}</td>
+                        <td>{{data.name}}</td>
+                        <td>{{data.type.name}}</td>
+                        <td>{{data.city}} / {{data.town}}</td>
+                        <td>{{data.fullAddress}}</td>
+                        <td>{{data.taxDepartment}}</td>
+                        <td>{{data.taxNumber}}</td>
+                        <td>{{data.depositAmount | trCurrency: '₺': true}}</td>
+                        <td>{{data.withdrawalAmount | trCurrency: '₺': true}}</td>
+                        <td>
+                            <span [ngClass]="data.depositAmount > data.withdrawalAmount? 'text-success' : 'text-danger'">
+                                {{(data.depositAmount - data.withdrawalAmount) | trCurrency: '₺': true}}
+                            </span>                            
+                        </td>
+                        <td class="d-flex">
+                            <button title="Details" class="btn btn-dark btn-sm me-1" routerLink="/customers/details/{{data.id}}">
+                                <i class="fa-regular fa-file-lines me-1"></i>                               
+                            </button>
+                            <button data-toggle="modal" data-target="#updateModal" (click)="get(data)" class="btn btn-outline-primary btn-sm me-1">
+                                <i class="fa-solid fa-edit"></i>
+                            </button>
+                            <button (click)="deleteById(data)" class="btn btn-outline-danger btn-sm">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- <div class="text-center">
+                <pagination-controls nextLabel="Next" previousLabel="Previous" (pageChange)="p = $event"></pagination-controls>
+            </div> -->
+        </div>
+    </app-section>
+</app-blank>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5">Add Customer Form</h3>
+                <button type="button" #createModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form formValidate #createForm="ngForm" autocomplete="off" (ngSubmit)="create(createForm)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" required minlength="3" [(ngModel)]="createModel.name" class="form-control" name="name">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Type</label>
+                        <select class="form-control" [(ngModel)]="createModel.typeValue" name="typeValue" required>
+                            @for(type of customerTypes; track type){
+                                <option [value]="type.value">
+                                    {{type.name}}
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>                   
+
+                    <div class="form-group mt-2">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <input type="text" [(ngModel)]="createModel.city" class="form-control" name="city">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Side</label>
+                                    <input type="text" [(ngModel)]="createModel.town" class="form-control" name="town">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <div class="form-group mt-2">
+                        <label>Full Address</label>
+                        <textarea [(ngModel)]="createModel.fullAddress" class="form-control" name="fullAddress" rows="5">
+                        </textarea>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="form-group mt-2">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Tax Department</label>
+                                    <input type="text" [(ngModel)]="createModel.taxDepartment" class="form-control" name="taxDepartment">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Tax Number</label>
+                                    <input type="text" [(ngModel)]="createModel.taxNumber" class="form-control" name="taxNumber">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                </div>
+                <div class="modal-footer">                    
+                    <button type="submit" class="btn btn-dark w-100">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5">Update Customer Form</h3>
+                <button type="button" #updateModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+            </div>
+            <form formValidate #updateForm="ngForm" autocomplete="off" (ngSubmit)="update(updateForm)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" required minlength="3" [(ngModel)]="updateModel.name" class="form-control" name="updateName">
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label>Type</label>
+                        <select class="form-control" [(ngModel)]="updateModel.typeValue" name="updateTypeValue" required>
+                            @for(type of customerTypes; track type){
+                                <option [value]="type.value">
+                                    {{type.name}}
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>                   
+
+                    <div class="form-group mt-2">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <input type="text" [(ngModel)]="updateModel.city" class="form-control" name="updateCity">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <input type="text" [(ngModel)]="updateModel.town" class="form-control" name="updateTown">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <div class="form-group mt-2">
+                        <label>Full Address</label>
+                        <textarea [(ngModel)]="updateModel.fullAddress" class="form-control" name="updateFullAddress" rows="5">
+                        </textarea>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="form-group mt-2">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Tax Department</label>
+                                    <input type="text" [(ngModel)]="updateModel.taxDepartment" class="form-control" name="updateTaxDepartment">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Tax Number</label>
+                                    <input type="text" [(ngModel)]="updateModel.taxNumber" class="form-control" name="updateTaxNumber">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                </div>
+                <div class="modal-footer">                    
+                    <button type="submit" class="btn btn-primary w-100">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

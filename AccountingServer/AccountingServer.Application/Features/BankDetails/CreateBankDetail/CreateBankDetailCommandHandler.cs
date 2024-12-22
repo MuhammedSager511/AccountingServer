@@ -8,8 +8,8 @@ using TS.Result;
 namespace AccountingServer.Application.Features.BankDetails.CreateBankDetail;
 
 internal sealed class CreateBankDetailCommandHandler(
-    //ICustomerRepository customerRepository,
-    //ICustomerDetailRepository customerDetailRepository,
+    ICustomerRepository customerRepository,
+    ICustomerDetailRepository customerDetailRepository,
     ICashRegisterRepository cashRegisterRepository,
     ICashRegisterDetailRepository cashRegisterDetailRepository,
     IBankRepository bankRepository,
@@ -81,35 +81,35 @@ internal sealed class CreateBankDetailCommandHandler(
             cacheService.Remove("cashRegisters");
         }
 
-        //if(request.OppositeCustomerId is not null)
-        //{
-        //    Customer? customer =  await customerRepository.GetByExpressionWithTrackingAsync(p=> p.Id == request.OppositeCustomerId, cancellationToken);
+        if (request.OppositeCustomerId is not null)
+        {
+            Customer? customer = await customerRepository.GetByExpressionWithTrackingAsync(p => p.Id == request.OppositeCustomerId, cancellationToken);
 
-        //    if(customer is null)
-        //    {
-        //        return Result<string>.Failure("Cari bulunamadı");
-        //    }
+            if (customer is null)
+            {
+                return Result<string>.Failure("Cari bulunamadı");
+            }
 
-        //    customer.DepositAmount += request.Type == 1 ? request.Amount : 0;
-        //    customer.WithdrawalAmount += request.Type == 0 ? request.Amount : 0;
+            customer.DepositAmount += request.Type == 1 ? request.Amount : 0;
+            customer.WithdrawalAmount += request.Type == 0 ? request.Amount : 0;
 
-        //    CustomerDetail customerDetail = new()
-        //    {
-        //        CustomerId = customer.Id,
-        //        BankDetailId = bankDetail.Id,
-        //        Date = request.Date,
-        //        Description = request.Description,
-        //        DepositAmount = request.Type == 1 ? request.Amount : 0,
-        //        WithdrawalAmount = request.Type == 0 ? request.Amount : 0,
-        //        Type = CustomerDetailTypeEnum.Bank
-        //    };
+            CustomerDetail customerDetail = new()
+            {
+                CustomerId = customer.Id,
+                BankDetailId = bankDetail.Id,
+                Date = request.Date,
+                Description = request.Description,
+                DepositAmount = request.Type == 1 ? request.Amount : 0,
+                WithdrawalAmount = request.Type == 0 ? request.Amount : 0,
+                Type = CustomerDetailTypeEnum.Bank
+            };
 
-        //    bankDetail.CustomerDetailId = customerDetail.Id;
+            bankDetail.CustomerDetailId = customerDetail.Id;
 
-        //    await customerDetailRepository.AddAsync(customerDetail, cancellationToken);
+            await customerDetailRepository.AddAsync(customerDetail, cancellationToken);
 
-        //    cacheService.Remove("customers");
-        //}
+            cacheService.Remove("customers");
+        }
 
         await unitOfWorkCompany.SaveChangesAsync(cancellationToken);
 

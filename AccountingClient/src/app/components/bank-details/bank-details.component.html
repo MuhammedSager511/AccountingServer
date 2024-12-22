@@ -1,5 +1,5 @@
-<app-blank pageName="{{bank.name}} Bank Movement" [routes]="['Records','Banks',bank.name + ' Bank Movements']">
-    <app-section sectionTitle="{{bank.name}} Bank Movements">
+<app-blank pageName="{{bank.name}} Bank Transaction" [routes]="['Records', 'Banks', bank.name + ' Bank Transactions']">
+    <app-section sectionTitle="{{bank.name}} Bank Transactions">
         <div class="form-group row">
             <div class="col-3">
                 <button class="btn btn-dark" data-toggle="modal" data-target="#createModal">
@@ -17,13 +17,13 @@
                         <input type="date" class="form-control" [(ngModel)]="endDate">
                     </div>
                     <div>
-                        <button class="btn btn-dark w-100" (click)="getAll()">Get</button>
+                        <button class="btn btn-dark w-100" (click)="getAll()">Fetch</button>
                     </div>
                 </div>
             </div>
 
             <div class="col-3">
-                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Enter search value...">
+                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Enter value to search...">
             </div>
         </div>
 
@@ -31,7 +31,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>ON</th>
+                        <th>#</th>
                         <th>Date</th>
                         <th>Description</th>
                         <th>Deposit</th>
@@ -40,13 +40,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(data of bank.details| bankDetail: search ;track data){
+                    @for(data of bank.details | bankDetail: search; track data){
                     <tr>
                         <td>{{$index + 1}}</td>
                         <td>{{data.date | date: 'dd.MM.yyyy'}}</td>
                         <td>
                             <span class="me-1">{{data.description}} </span>
-                            @if(data.bankDetailId || data.cashRegisterDetailId){
+                            @if(data.bankDetailId || data.cashRegisterDetailId || data.customerDetailId){
                                 <i class="fa-solid fa-right-left"></i>
                             }
                         </td>
@@ -73,7 +73,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Bank Movement Addition Form</h3>
+                <h3 class="modal-title">Bank Transaction Add Form</h3>
                 <button type="button" #createModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
                     <i class="fa-solid fa-x"></i>
                 </button>
@@ -107,7 +107,7 @@
                             <option [value]="0">Other</option>
                             <option [value]="1">Bank</option>
                             <option [value]="2">Cash</option>
-                            <option [value]="3">Current</option>
+                            <option [value]="3">Customer</option>
                         </select>
                         <div class="invalid-feedback"></div>
                     </div>    
@@ -165,6 +165,21 @@
                     }
 
                     @if(createModel.recordType == 3){
+                        <div class="form-group mt-2">
+                            <label>Customer</label>
+                            <select 
+                            class="form-control" 
+                            name="oppositeCashId"
+                            [(ngModel)]="createModel.oppositeCustomerId">
+                                @for(customer of customers; track customer){
+                                    <option [value]="customer.id">
+                                        {{customer.name}}
+                                    </option>
+                                }
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>    
+
                          @if(1 != bank.currencyType.value){
                             <div class="form-group mt-2">
                                 <label>Opposite Amount</label>
@@ -194,7 +209,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title fs-5">Bank Movement Update Form</h3>
+                <h3 class="modal-title fs-5">Bank Transaction Update Form</h3>
                 <button type="button" #updateModalCloseBtn class="btn btn-outline-danger" data-dismiss="modal">
                     <i class="fa-solid fa-x"></i>
                 </button>

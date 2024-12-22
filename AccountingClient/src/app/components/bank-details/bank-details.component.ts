@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { BankDetailPipe } from '../../pipes/bank-detail.pipe';
 import { SharedModule } from '../../modules/shared.module';
+import { CustomerModel } from '../../models/customer.model';
 
 @Component({
   selector: 'app-bank-details',
@@ -22,7 +23,7 @@ export class BankDetailsComponent {
   bank: BankModel = new BankModel();
   banks: BankModel[] = [];
   cashRegisters: CashRegisterModel[] = [];
-  // customers: CustomerModel[] = [];
+   customers: CustomerModel[] = [];
   bankId: string = "";
   search:string = "";
   startDate: string = "";
@@ -50,7 +51,7 @@ export class BankDetailsComponent {
       this.getAll();
       this.getAllBanks();
       this.getAllCashRegisters();
-      // this.getAllCustomers();
+       this.getAllCustomers();
     })
   }
 
@@ -73,11 +74,11 @@ export class BankDetailsComponent {
     });
   }
 
-  // getAllCustomers(){
-  //   this.http.post<CustomerModel[]>("Customers/GetAll",{},(res)=> {
-  //     this.customers = res;
-  //   });
-  // }
+  getAllCustomers(){
+    this.http.post<CustomerModel[]>("Customers/GetAll",{},(res)=> {
+      this.customers = res;
+    });
+  }
 
   create(form: NgForm){        
     if(form.valid){
@@ -87,13 +88,13 @@ export class BankDetailsComponent {
       if(this.createModel.recordType == 0) {
         this.createModel.oppositeBankId = null;  
         this.createModel.oppositeCashRegisterId = null;      
-        // this.createModel.oppositeCustomerId = null;
+         this.createModel.oppositeCustomerId = null;
       }else if(this.createModel.recordType == 1){
         this.createModel.oppositeCashRegisterId = null;
-        // this.createModel.oppositeCustomerId = null;
+        this.createModel.oppositeCustomerId = null;
       }else if(this.createModel.recordType == 2){
         this.createModel.oppositeBankId = null; 
-        // this.createModel.oppositeCustomerId = null;
+         this.createModel.oppositeCustomerId = null;
       }else if(this.createModel.recordType == 3){
         this.createModel.oppositeBankId = null; 
         this.createModel.oppositeCashRegisterId = null;

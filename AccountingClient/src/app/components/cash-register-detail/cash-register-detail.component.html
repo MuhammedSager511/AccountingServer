@@ -108,7 +108,7 @@
                             <option [value]="0">Other</option>
                             <option [value]="1">Cash</option>
                             <option [value]="2">Bank</option>
-                            <option [value]="3">Current</option>
+                            <option [value]="3">Customer </option>
                         </select>
                         <div class="invalid-feedback"></div>
                     </div>    
@@ -168,18 +168,19 @@
 
                     @if(createModel.recordType == 3){
                         <div class="form-group mt-2">
-                            <label>Cari</label>
+                            <label>Customer </label>
                             <select 
                             class="form-control" 
                             name="oppositeCashId"
+                             [(ngModel)]="createModel.oppositeCustomerId"
                             >
-                            <!-- 
-                                [(ngModel)]="createModel.oppositeCustomerId"
+                            
+                               
                             @for(customer of customers; track customer){
                                     <option [value]="customer.id">
                                         {{customer.name}}
                                     </option>
-                                } -->
+                                }
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>    

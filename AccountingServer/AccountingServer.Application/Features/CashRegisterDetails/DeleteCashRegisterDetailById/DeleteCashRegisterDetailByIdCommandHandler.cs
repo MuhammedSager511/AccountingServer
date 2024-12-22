@@ -7,8 +7,8 @@ using TS.Result;
 namespace AccountingServer.Application.Features.CashRegisterDetails.DeleteCashRegisterDetailById;
 
 internal sealed class DeleteCashRegisterDetailByIdCommandHandler(
-    //ICustomerRepository customerRepository,
-    //ICustomerDetailRepository customerDetailRepository,
+    ICustomerRepository customerRepository,
+    ICustomerDetailRepository customerDetailRepository,
     IBankRepository bankRepository,
     IBankDetailRepository bankDetailRepository,
     ICashRegisterRepository cashRegisterRepository,
@@ -73,7 +73,7 @@ internal sealed class DeleteCashRegisterDetailByIdCommandHandler(
 
             if (oppositeBankDetail is null)
             {
-                return Result<string>.Failure("Banka hareketi bulunamadı");
+                return Result<string>.Failure("Banka not found");
             }
 
             Bank? oppositeBank =
@@ -82,7 +82,7 @@ internal sealed class DeleteCashRegisterDetailByIdCommandHandler(
 
             if (oppositeBank is null)
             {
-                return Result<string>.Failure("Banka bulunamadı");
+                return Result<string>.Failure("Bank   not found");
             }
 
             oppositeBank.DepositAmount -= oppositeBankDetail.DepositAmount;
@@ -91,32 +91,32 @@ internal sealed class DeleteCashRegisterDetailByIdCommandHandler(
             bankDetailRepository.Delete(oppositeBankDetail);
         }
 
-        //if (cashRegisterDetail.CustomerDetailId is not null)
-        //{
-        //    CustomerDetail? customerDetail =
-        //    await customerDetailRepository
-        //    .GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.CustomerDetailId, cancellationToken);
+        if (cashRegisterDetail.CustomerDetailId is not null)
+        {
+            CustomerDetail? customerDetail =
+            await customerDetailRepository
+            .GetByExpressionWithTrackingAsync(p => p.Id == cashRegisterDetail.CustomerDetailId, cancellationToken);
 
-        //    if (customerDetail is null)
-        //    {
-        //        return Result<string>.Failure("Cari hareket bulunamadı");
-        //    }
+            if (customerDetail is null)
+            {
+            return Result<string>.Failure("Customer not found");
+            }
 
-        //    Customer? customer =
-        //    await customerRepository
-        //    .GetByExpressionWithTrackingAsync(p => p.Id == customerDetail.CustomerId, cancellationToken);
+            Customer? customer =
+            await customerRepository
+            .GetByExpressionWithTrackingAsync(p => p.Id == customerDetail.CustomerId, cancellationToken);
 
-        //    if (customer is null)
-        //    {
-        //        return Result<string>.Failure("Cari bulunamadı");
-        //    }
+            if (customer is null)
+            {
+                return Result<string>.Failure("Customer not found");
+            }
 
-        //    customer.DepositAmount -= customerDetail.DepositAmount;
-        //    customer.WithdrawalAmount -= customerDetail.WithdrawalAmount;
+            customer.DepositAmount -= customerDetail.DepositAmount;
+            customer.WithdrawalAmount -= customerDetail.WithdrawalAmount;
 
-        //    customerDetailRepository.Delete(customerDetail);
-        //    cacheService.Remove("customers");
-        //}
+            customerDetailRepository.Delete(customerDetail);
+            cacheService.Remove("customers");
+        }
 
         cashRegisterDetailRepository.Delete(cashRegisterDetail);
 
