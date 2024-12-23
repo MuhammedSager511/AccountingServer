@@ -1,0 +1,41 @@
+<app-blank pageName="{{product.name}} Stock Movements" [routes]="['Records','Stocks',product.name + ' Stock Movements']">
+    <app-section sectionTitle="{{product.name}} Stock Movements">
+        <div class="form-group row">
+            <div class="col-9">                
+            </div>
+
+            <div class="col-3">
+                <input [(ngModel)]="search" type="search" class="form-control" placeholder="Enter value to search...">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ON</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Deposit</th>
+                        <th>Withdrawal</th>   
+                        <th>Unit Price</th>                     
+                        <th>Total Amount</th>                     
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(data of product.details| productDetail: search ;track data){
+                    <tr>
+                        <td>{{$index + 1}}</td>
+                        <td>{{data.date | date: 'dd.MM.yyyy'}}</td>                        
+                        <td>{{data.description}}</td>
+                        <td>{{data.deposit}}</td>
+                        <td>{{data.withdrawal}}</td>
+                        <td>{{data.price | trCurrency: '₺':true}}</td>
+                        <td>{{(data.price * (data.deposit + data.withdrawal)) | trCurrency: '₺':true}}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </app-section>
+</app-blank>

@@ -73,6 +73,14 @@ export const Menus: MenuModel[] = [
         subMenus:[],
         showThisMenuJustAdmin: true,
     },
+    {
+        name: "Products",
+        icon: "fa-solid fa-boxes-stacked",
+        url: "/products",
+        isTitle: false,
+        subMenus:[],
+        showThisMenuJustAdmin: true,
+    },
     // {
     //     name: "Examples",
     //     icon: "fa-solid fa-explosion",

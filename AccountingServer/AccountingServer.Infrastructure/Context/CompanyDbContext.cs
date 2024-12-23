@@ -96,6 +96,8 @@ namespace AccountingServer.Infrastructure.Context
         public DbSet<BankDetail> BankDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerDetail> CustomerDetails { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductDetail> ProductDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -153,7 +155,18 @@ namespace AccountingServer.Infrastructure.Context
             modelBuilder.Entity<CustomerDetail>().Property(p => p.WithdrawalAmount).HasColumnType("money");
             modelBuilder.Entity<CustomerDetail>().Property(p => p.Type)
                .HasConversion(type => type.Value, value => CustomerDetailTypeEnum.FromValue(value));
+
+            //ProductDetail
+            modelBuilder.Entity<ProductDetail>().Property(p => p.Deposit).HasColumnType("decimal(7,2)");
+            modelBuilder.Entity<ProductDetail>().Property(p => p.Withdrawal).HasColumnType("decimal(7,2)");
+            modelBuilder.Entity<ProductDetail>().Property(p => p.Price).HasColumnType("money");
+          
             
+            // Product
+            modelBuilder.Entity<Product>().HasQueryFilter(filter => !filter.IsDeleted);
+            modelBuilder.Entity<Product>().Property(p => p.Deposit).HasColumnType("decimal(7,2)");
+            modelBuilder.Entity<Product>().Property(p => p.Withdrawal).HasColumnType("decimal(7,2)");
+
         }
 
     }
