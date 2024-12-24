@@ -9,5 +9,5 @@ public sealed class ProductDetail : Entity
     public decimal Deposit { get; set; }
     public decimal Withdrawal { get; set; }
     public decimal Price { get; set; }
-    //public Guid? InvoiceId { get; set; }
+    public Guid? InvoiceId { get; set; }
 }

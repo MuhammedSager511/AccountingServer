@@ -98,6 +98,8 @@ namespace AccountingServer.Infrastructure.Context
         public DbSet<CustomerDetail> CustomerDetails { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -166,6 +168,24 @@ namespace AccountingServer.Infrastructure.Context
             modelBuilder.Entity<Product>().HasQueryFilter(filter => !filter.IsDeleted);
             modelBuilder.Entity<Product>().Property(p => p.Deposit).HasColumnType("decimal(7,2)");
             modelBuilder.Entity<Product>().Property(p => p.Withdrawal).HasColumnType("decimal(7,2)");
+
+
+
+
+           // Invoice
+            modelBuilder.Entity<Invoice>().Property(p => p.Amount).HasColumnType("money");
+            modelBuilder.Entity<Invoice>().Property(p => p.Type)
+                .HasConversion(type => type.Value, value => InvoiceTypeEnum.FromValue(value));
+            modelBuilder.Entity<Invoice>().HasQueryFilter(filter => !filter.IsDeleted);
+            modelBuilder.Entity<Invoice>().HasQueryFilter(filter => !filter.Customer!.IsDeleted);
+            
+
+
+            //InvoiceDetail
+            modelBuilder.Entity<InvoiceDetail>().Property(p => p.Quantity).HasColumnType("decimal(7,2)");
+            modelBuilder.Entity<InvoiceDetail>().Property(p => p.Price).HasColumnType("money");
+            modelBuilder.Entity<InvoiceDetail>().HasQueryFilter(filter => !filter.Product!.IsDeleted);
+            
 
         }
 

@@ -5,5 +5,7 @@ export class ProductModel{
     name: string = "";
     deposit: number = 0;
     withdrawal: number = 0;
+ 
+    
     details: ProductDetailModel[] = [];    
 }

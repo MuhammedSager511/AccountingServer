@@ -40,11 +40,11 @@
                         <td>{{data.fullAddress}}</td>
                         <td>{{data.taxDepartment}}</td>
                         <td>{{data.taxNumber}}</td>
-                        <td>{{data.depositAmount | trCurrency: '₺': true}}</td>
-                        <td>{{data.withdrawalAmount | trCurrency: '₺': true}}</td>
+                        <td>{{data.depositAmount | trCurrency: '$': true}}</td>
+                        <td>{{data.withdrawalAmount | trCurrency: '$': true}}</td>
                         <td>
                             <span [ngClass]="data.depositAmount > data.withdrawalAmount? 'text-success' : 'text-danger'">
-                                {{(data.depositAmount - data.withdrawalAmount) | trCurrency: '₺': true}}
+                                {{(data.depositAmount - data.withdrawalAmount) | trCurrency: '$': true}}
                             </span>                            
                         </td>
                         <td class="d-flex">

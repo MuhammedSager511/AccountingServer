@@ -8,7 +8,10 @@ namespace AccountingServer.Application
     public static class DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
+
         {
+            services.AddSignalR();
+
             services.AddFluentEmail("info@Accounting.com").AddSmtpSender("localhost", 25);
 
             services.AddAutoMapper(typeof(DependencyInjection).Assembly);
