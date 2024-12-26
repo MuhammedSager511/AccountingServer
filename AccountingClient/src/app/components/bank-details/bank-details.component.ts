@@ -28,6 +28,7 @@ export class BankDetailsComponent {
   search:string = "";
   startDate: string = "";
   endDate: string = "";
+  p: number = 1;
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;

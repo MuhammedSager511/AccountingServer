@@ -12,6 +12,7 @@ import { HttpService } from '../../services/http.service';
 })
 export class ProductProfitabilityReportsComponent implements OnInit {
   data: ProductProfitabilityModel[] = [];
+  p: number = 1;
 
   constructor(
     private http: HttpService

@@ -16,6 +16,7 @@ export class CustomerDetailsComponent {
   customer: CustomerModel = new CustomerModel();  
   customerId: string = "";
   search:string = ""; 
+  p: number = 1;
 
   constructor(
     private http: HttpService,    

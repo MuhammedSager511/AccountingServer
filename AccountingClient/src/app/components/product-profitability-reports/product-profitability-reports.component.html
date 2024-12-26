@@ -12,7 +12,7 @@
                 </tr>
              </thead>
              <tbody>
-                @for(d of data; track d){
+                @for(d of data| paginate: { itemsPerPage: 10, currentPage: p }; track d){
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{d.name}}</td>
@@ -28,5 +28,8 @@
                 }
              </tbody>
         </table>
+        <div class="text-center">
+            <pagination-controls nextLabel="Next" previousLabel="Previous" (pageChange)="p = $event"></pagination-controls>
+        </div>
     </app-section>
 </app-blank>

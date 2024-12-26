@@ -17,6 +17,7 @@ export class ProductDetailsComponent {
   product: ProductModel = new ProductModel();  
   productId: string = "";
   search:string = ""; 
+  p: number = 1;
 
   constructor(
     private http: HttpService,    

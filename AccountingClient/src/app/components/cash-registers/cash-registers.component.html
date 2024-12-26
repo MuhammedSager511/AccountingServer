@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(data of cashRegisters | cashRegister: search ;track data){
+                    @for(data of cashRegisters | cashRegister: search | paginate: { itemsPerPage: 10, currentPage: p };track data){
                     <tr>
                         <td>{{$index + 1}}</td>
                         <td>{{data.name}}</td>
@@ -55,6 +55,10 @@
                     }
                 </tbody>
             </table>
+        </div>
+
+        <div class="text-center">
+            <pagination-controls nextLabel="Next" previousLabel="Previous" (pageChange)="p = $event"></pagination-controls>
         </div>
     </app-section>
 </app-blank>

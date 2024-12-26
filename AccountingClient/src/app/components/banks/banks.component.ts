@@ -18,6 +18,7 @@ import { NgForm } from '@angular/forms';
 export class BanksComponent {
   banks: BankModel[] = [];
   search:string = "";
+  p: number = 1;
 
   currencyTypes = CurrencyTypes;
 

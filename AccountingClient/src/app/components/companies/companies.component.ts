@@ -16,6 +16,7 @@ import { CompanyPipe } from '../../pipes/company.pipe';
 export class CompaniesComponent {
   companies: CompanyModel[] = [];
   search:string = "";
+  p: number = 1;
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;

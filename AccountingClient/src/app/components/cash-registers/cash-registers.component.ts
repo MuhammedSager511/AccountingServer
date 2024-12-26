@@ -21,7 +21,7 @@ import { NgForm } from '@angular/forms';
 export class CashRegistersComponent {
   cashRegisters: CashRegisterModel[] = [];
   search:string = "";
-
+  p: number = 1;
   currencyTypes = CurrencyTypes;
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
